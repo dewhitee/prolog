@@ -6,7 +6,7 @@ parent(leia, padme).
 parent(darth_vader, shmi).
 
 % Facts
-male(dart_vader).
+male(darth_vader).
 male(luke).
 
 % Facts
@@ -37,10 +37,28 @@ grandfather(Child, Grandparent) :-
 % End condition (Rule)
 ancestor(Child, Ancestor) :-
     parent(Child, Ancestor).
-
 % If first ancestor's parent predicate is false - then going to recursive part
-
 % Recursive part (Rule)
 ancestor(Child, Ancestor) :-
     parent(Child, Parent), % If ancester is placed here - infinite loop.
     ancestor(Parent, Ancestor).
+
+% siblings
+%siblings(Sibling1, Sibling2) :-
+%    parent(Sibling1, X),
+%    parent(Sibling2, X).
+
+sibling(Child, Sibling) :-
+    parent(Child, Parent),
+    parent(Sibling, Parent).
+
+% sister
+sister(Child, Sibling) :-
+    female(Sibling),
+    sibling(Child, Sibling).
+
+% brother
+brother(Child, Sibling) :-
+    male(Sibling),
+    sibling(Child, Sibling).
+
