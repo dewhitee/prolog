@@ -3,25 +3,42 @@
 % Places:
 % dachaGeneral
 % garageOutCity
-% OfficeOfYellowPapper
+% officeCompany
+% officeOfYellowPapper
+%
+% Camera:
+% has, hasNot
 %
 % Actions:
 % move(onLimuzin)
 % state(where)
-% grab(fotoCamera)
-% takeFoto
-% victory
-%
+% grab(Camera)
+% film(scene)
+% victory(at dacha, at office, film)
 
-move(state(at_middle, on_box, at_middle, has_not), grab, state(at_middle, on_box, at_middle, has)).
 
-move(state(X, on_floor, X, Y), climb, state(X, on_box, X, Y)).
+% first version
 
-move(state(X1, on_floor, X1, Y), push(X1, X2), state(X2, on_floor, X2, Y)).
+% описание состояния
+% state(гдеСьемачнаяГруппа, сниматьСцену, естьКамера).
 
-move(state(X1, on_floor, XC, Y), walk(X1, X2), state(X2, on_floor, XC, Y)).
+% переход из локаций
+% move(place1, place2).
 
-victory(state(_, _, _, has), []).
+
+% При выполнении
+move(state(officeOfYellowPapper, noFilm, noCamera), go, state(garageOutCity, noFilm, noCamera)).
+move(state(garageOutCity, noFilm, noCamera), grab, state(garageOutCity, noFilm, camera)).
+
+move(state(garageOutCity, noFilm, noCamera), go, state(dachaGeneral, noFilm, camera)).
+move(state(dachaGeneral, noFilm, camera), shootTheFilm, state(dachaGeneral, film, camera)).
+
+move(state(garageOutCity, noFilm, noCamera), go, state(officeCompany, noFilm, camera)).
+move(state(officeCompany, noFilm, camera), shootTheFilm, state(officeCompany, film, camera)).
+
+victory(state(dachaGeneral, film, camera), []).
+victory(state(officeCompany, film, camera), []).
+
 victory(CurrentState, [CurrentMoveDescription | NextMoves]) :-
         move(CurrentState, CurrentMoveDescription, NextState),
         victory(NextState, NextMoves).
