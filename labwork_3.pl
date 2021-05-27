@@ -13,24 +13,26 @@ tree(root(
     b(ba, bb(bba, bbb, bbc)), 
     c(ca, cb(cba, cbb, cbc, cbd), cc))).
 
-find(X, Path) :-
-    tree(Tree),
-    checkChildren(X, [Tree], Path).
+find(X, Path) :-                        % Returns all occurrences of X in Tree using Depth-first search.
+    tree(Tree),                         % concretizing Tree
+    checkChildren(X, [Tree], Path).     % checking all children
 
-check(X, [Node | Kids], Path) :-
-    checkHead(X, Node, Path);
-    checkChildren(X, Kids, KidsPath),
-    Path = [Node | KidsPath].
+check(X, [Node | Kids], Path) :-        % Depth-first search.
+    checkHead(X, Node, Path);           % first checking if head (Node) contains X,
+    checkChildren(X, Kids, KidsPath),   % then children, recursively
+    Path = [Node | KidsPath].           % combining Node search path and Kids search path into Path
 
-checkHead(X, Node, [Node]) :-
-    is_substr(X, Node).
+checkHead(X, Node, [Node]) :-           % Checks head and returns it as a Path list.
+    isSubstr(X, Node).                  % checking if head (Node) has substring we are searching for
 
-checkChildren(X, [Kid | _], Path) :-
-    Kid =.. Vertices,
-    check(X, Vertices, Path).
+checkChildren(X, [Kid | _], Path) :-    % Checks children of Kid. Fails if Kid term don't have any parameters (if we have reached the leaf).
+    Kid =.. Vertices,                   % decomposing Vertices - turning it into list with term's name as Head and it's params as Tail
+                                        % e.g. if [Kid | _ ] == aa(aaa, aab) then Vertices = [aa | (aaa, aab)]                                       
+    check(X, Vertices, Path).           % checking Vertices list we got
 
-checkChildren(X, [_ | Tail], Path) :-
-    checkChildren(X, Tail, Path).
+checkChildren(X, [_ | Tail], Path) :-   % Checks children of a tail. Used to go back (up) in the tree when we have reached the leaf.
+    checkChildren(X, Tail, Path).       % checking each children we got in Tail of a list
 
-is_substr(Substr, Str) :-
-    sub_atom(Str, _, _, _, Substr).
+isSubstr(Substr, Str) :-                % Checks if Str (Node) contains Substr (X) we are searching for
+    sub_atom(Str, _, _, _, Substr).     % Succeeds if atom Str can be split into three atoms
+
