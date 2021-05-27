@@ -19,5 +19,3 @@ sol([Y | Ylist], [X | Dx1], Dy, Du, Dv) :-                      %
 delete(Item, [Item | List], List).                              % Критерий остановки
 delete(Item, [First | List], [First | List1]) :-                %
     delete(Item, List, List1).                                  % Рекурсивный вызов, ищем искомый элемент в хвосте списка List                
-    
-% Note: у программы 92 решения.
